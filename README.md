@@ -1,11 +1,11 @@
-Installation
-------------
+# Installation
 
-Preconditions
-=============
+
+## Preconditions
 
 1. You have configured your Apache as follows:
 
+```
 <VirtualHost IP:443> 
   ...
   # this is under virtualhost :443 section
@@ -16,21 +16,20 @@ Preconditions
   SSLCACertificateFile /etc/ssl/certs/id.crt
   ...
 </VirtualHost>
-
+```
 
 If you want that before opening Wiki user certificate is asked and autolog is done, add also these lines to your Virtualhost config or .htaccess file in Wiki root:
 
-...
+```
 # request client cert
 SSLVerifyClient require
 SSLVerifyDepth 2
 SSLOptions +StdEnvVars +ExportCertData
-...
-
+```
 
 2. Using .htaccess must be allowed. If it is not allowed, you have to copy inc/auth/smartcard/.htaccess content to virtualhost directory section for inc/auth/smartcard:
 
-
+```
 <VirtualHost IP:443>
   ...
   # Usally using Directory instead of Location is recommended, 
@@ -42,14 +41,13 @@ SSLOptions +StdEnvVars +ExportCertData
   </Location>
 ...
 </VirtualHost>
-
+```
 
 
 
 3. If your value against what your would like to check is not in certificate.subject.serialNumber, you will have to change `inc/auth/smartcard.php` line 85.
 
-Steps
------
+## Steps
 
 - cd your_dokuwiki_folder
 - svn export https://dokuwiki-smartcard-authentication.googlecode.com/svn/trunk/dokuwiki/ . --force
@@ -61,8 +59,7 @@ Steps
 
 
 
-Allowing Smartcard authentication
----------------------------------
+## Allowing Smartcard authentication
 
 You have to do:
 - Mark user serial (or some other parameter for check) as one of his groups.
@@ -77,13 +74,13 @@ This auth module will authenticated user based on the serial found on smartcard 
   - else login with username and password will not be possible.
 
 
-Configuration
+## Configuration
 
 Must be defined in file: YOUR_WIKI_INSTALLATION/conf/local.php.
 
 Config parameters explanation:
 
-
+```php
 # set for docuwiki that smartcard auth module is used
 $conf['authtype']   = 'smartcard';
 
@@ -95,17 +92,14 @@ $conf['auth']['smartcard']['use_authtypes'] = 'plain,mysql';
 
 # log debug info to file
 $conf['auth']['smartcard']['log_to_file'] = 'true';
+```
 
 
-Known problems
---------------
+# Known problems
 
 - When using Fckglite WYSIWYG editor, first login fails - because fckglite resets session - fix info: http://code.google.com/p/dokuwiki-smartcard-authentication/issues/detail?id=1
 
 
-Author
-------
+# Author
 
 Margus Pärt (mxrguspxrt)
-
-
