@@ -1,0 +1,11 @@
+  * 2011 07 20 - Added canDo['logout']=>true for 2011-05-25, so logging out would work
+  * 2011 02 15 - SSL_CLIENT_S_DN instead of SSL_CLIENT_CERT is used (due
+  * headers can't be multiline and behind proxy SSL_CLIENT_CERT is not
+  * available in correct format), added few language files for en, et, uk
+  * and ru.
+  * 2010 05 22 - Added info message if Smartcard cert was not found
+  * 2010 05 22 - Added session_start() to inc/auth/smartcard/index.php to
+  * solve auth fail when session.auto_start=0
+  * 2010 05 18 - Fixed that some plugin forced re-auth, before session and
+  * cookies were set, auth failed.
+  * 2010 04 26 - initial release

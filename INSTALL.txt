@@ -1,0 +1,127 @@
+VERSION HISTORY
+
+    * 2011 02 15 - SSL_CLIENT_S_DN instead of SSL_CLIENT_CERT is used, added
+      few language files for en, et, uk and ru.
+    * 2010 05 22 - Added info message if Smartcard cert was not found
+    * 2010 05 22 - Added session_start() to inc/auth/smartcard/index.php to
+      solve auth fail when session.auto_start=0
+    * 2010 05 18 - Fixed that some plugin forced re-auth, before session and
+      cookies were set, auth failed.
+    * 2010 04 26 - initial release 
+
+
+HOW TO INSTALL
+
+PRECONDITIONS
+
+1. You have configured your Apache as follows:
+
+  ...
+  # this is under virtualhost :443 section
+  # your webserver public and private cert
+  SSLCertificateFile    /etc/ssl/certs/www.domain.ee.crt
+  SSLCertificateKeyFile /etc/ssl/private/www.domain.ee.key
+  # This makes certain, that its valid smartcard and is allowed (google for
+  # ID kaart + apache server)
+  SSLCACertificateFile /etc/ssl/certs/id.crt
+  ...
+
+If you want that before opening Wiki user certificate is asked and autolog
+is done, add also these lines to your Virtualhost config or .htaccess file
+in Wiki root:
+
+...
+  # request client cert
+  SSLVerifyClient require
+  SSLVerifyDepth 2
+  SSLOptions +StdEnvVars +ExportCertData
+  ...
+
+2. Using .htaccess is allowed (if it is not allowed, you have to copy
+inc/auth/smartcard/.htaccess content to virtualhost directory section for
+inc/auth/smartcard)
+
+3. If your value against what your would like to check is not in
+certificate.subject.serialNumber, you will have to change
+inc/auth/smartcard.php line 85.
+STEPS
+
+   1. svn checkout
+https://dokuwiki-smartcard-authentication.googlecode.com/svn/trunk/
+dokuwiki-smartcard-authentication
+   2. cp -a dokuwiki-smartcard-authentication/dokuwiki/*
+YOUR_DOKUWIKI_INSTALLATION (Copy content to Dokuwiki installation directory)
+   3. Configure authentication module (See: "Configure parameters")
+   4. Make Smartcard autentication available for user
+          * Add to your wiki what would reference to
+          * https://YOUR_DOMAIN/DOKUWIKI_PATH/inc/auth/smartcard
+            Modify in
+            YOUR_DOKUWIKI_INSTALLATION/inc/lang/YOUR_CHOSEN_LANGUAGE/login.txt
+            and add line: To log in with smart card, click:
+            [[inc/auth/smartcard|Autenticate me with Smartcard]] 
+
+HOW TO ALLOW SMARTCARD AUTH
+
+You have to do:
+
+   1. Mark user serial (or some other parameter for check) as one of his
+groups. 
+
+This auth module will authenticated user based on the serial found on
+smartcard with steps:
+
+   1. If ?u=smartcard&p=smartcard is called script check that
+certificate.subject.serialNumber exists (from $_SERVER['SSL_CLIENT_S_DN')
+          * if it exists: user, who has this value as his group, is allowed
+            in
+          * if it does not exist: user is not allowed in 
+   2. If auth is called with other parameters and
+$conf['smartcard']['allow_without_smartcard'] is checked
+          * if it is true: auth is delegated to auth modules defined in
+            $conf['smartcard']['use_authtypes']
+          * else login with username and password will not be possible. 
+
+CONFIGURE PARAMETERS
+
+Must be defined in file: YOUR_WIKI_INSTALLATION/conf/local.php.
+
+Config parameters explanation:
+
+  # set for docuwiki that smartcard auth module is used
+  $conf['authtype']   = 'smartcard';
+
+  # if this is set to true, without smartcard login is not allowed
+  $conf['auth']['smartcard']['allow_without_smartcard'] = 'true';
+
+  # auth modules to use. separated with comma (",")
+  $conf['auth']['smartcard']['use_authtypes'] = 'plain,mysql';
+
+  # log debug info to file
+  $conf['auth']['smartcard']['log_to_file'] = 'true';
+
+
+AUTHOR
+
+Margus Pärt
+
+
+FILELIST
+
+./dokuwiki
+./dokuwiki/inc
+./dokuwiki/inc/auth
+./dokuwiki/inc/auth/smartcard
+./dokuwiki/inc/auth/smartcard/.htaccess
+./dokuwiki/inc/auth/smartcard/index.php
+./dokuwiki/inc/auth/smartcard.class.php
+./dokuwiki/conf
+./dokuwiki/conf/auth_smartcard.php
+./AUTHOR.txt
+./INSTALL.txt
+
+
+KNOWN PROBLEMS
+
+    * When using Fckglite WYSIWYG editor, first login fails - because
+      fckglite resets session - fix info:
+      http://code.google.com/p/dokuwiki-smartcard-authentication/issues/detail?id=1 

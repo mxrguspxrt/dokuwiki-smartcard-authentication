@@ -1,0 +1,8 @@
+====== Вхід до вікі ======
+
+To log in with smart card, click:                                           
+[[this>inc/auth/smartcard|Autenticate me with Smartcard]]
+
+
+Ви не ввійшли до системи. Введіть ваші реєстраційні дані для того, щоб увійти. У вашому браузері повинні бути увімкнені файли cookies.
+
